@@ -54,6 +54,13 @@ require("lazy").setup({
   },
   { "neovim/nvim-lspconfig" },
   { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {},
+  },
 })
 
 -- config plugins
@@ -69,3 +76,4 @@ require("plugins.lspconfig")
 require("plugins.whichkey")
 require("plugins.cmp")
 require("plugins.mini")
+require("plugins.indent")
