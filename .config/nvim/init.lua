@@ -1,5 +1,4 @@
 -- lua for nvim https://neovim.io/doc/user/lua-guide.html#lua-guide
-vim.g.python3_host_prog = "$HOME/.python3_venv/general/bin/python3"
 vim.o.termguicolors = true
 
 require("user.general")

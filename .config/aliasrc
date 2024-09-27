@@ -4,4 +4,4 @@ alias valgrind='valgrind --tool=memcheck --leak-check=full --show-reachable=yes 
 alias ll='ls -l'
 alias dotfiles='/usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME"'
 alias dotfiles-docker='/usr/bin/git --git-dir="$HOME/.dotfiles-docker/" --work-tree="$HOME"'
-alias pyenv='source $HOME/.python3_venv/general/bin/activate'
+alias pyvenv='source $HOME/.pyvenv/bin/activate'
