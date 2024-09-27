@@ -1,0 +1,65 @@
+# Use Arch Linux as the base image
+FROM archlinux:latest
+
+# Update the system fully and install the required packages
+RUN pacman -Syu --noconfirm \
+       sudo \
+       luarocks \
+       vi \
+       vim \
+       neovim \
+       tmux \
+       gdb \
+       git \
+       htop \
+       noto-fonts \
+       ttf-nerd-fonts-symbols \
+       ripgrep \
+       zsh \
+       starship \
+       fd \
+       fzf \
+       openssh \
+       gcc \
+       clang \
+       make \
+       cmake \
+       automake \
+       autoconf \
+       man-db
+
+# Create a non-root user (e.g., "user")
+RUN useradd -m user && \
+    echo "user:user" | chpasswd && \
+    echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# Set the password for root
+RUN echo "root:root" | chpasswd
+
+# Set permissions for the new user
+RUN chown -R user:user /home/user/
+
+# Set the default shell to zsh
+RUN chsh -s /usr/bin/zsh user
+
+# Set the user to "user"
+USER user
+
+# Set the default working directory
+WORKDIR /home/user
+
+# get config files from git repo
+RUN git clone --bare https://github.com/hadjoullis/dotfiles-docker.git $HOME/.dotfiles-docker
+RUN /usr/bin/git --git-dir="$HOME/.dotfiles-docker/" --work-tree="$HOME" checkout -f
+RUN /usr/bin/git --git-dir="$HOME/.dotfiles-docker/" --work-tree="$HOME" config --local status.showUntrackedFiles no 
+
+# create zsh history file
+RUN mkdir -p "$HOME/.cache/zsh"
+RUN touch "$HOME/.cache/zsh/history"
+
+# create python venv
+RUN python -m venv "$HOME/.pyvenv"
+RUN source "$HOME/.pyvenv/bin/activate" && pip3 install python-lsp-server pynvim && deactivate
+
+# Set the default shell command
+CMD ["/usr/bin/zsh"]
