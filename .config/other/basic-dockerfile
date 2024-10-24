@@ -3,30 +3,42 @@ FROM archlinux:latest
 
 # Update the system fully and install the required packages
 RUN pacman -Syu --noconfirm \
-       sudo \
-       luarocks \
-       vi \
-       vim \
-       neovim \
-       tmux \
+       autoconf \
+       automake \
+       clang \
+       cmake \
+       fd \
+       fzf \
+       gcc \
        gdb \
        git \
        htop \
-       noto-fonts \
-       ttf-nerd-fonts-symbols \
-       ripgrep \
-       zsh \
-       starship \
-       fd \
-       fzf \
-       openssh \
-       gcc \
-       clang \
+       lf \
+       libc++ \
+       libc++abi \
+       lld \
+       llvm \
+       llvm-libs \
+       luarocks \
        make \
-       cmake \
-       automake \
-       autoconf \
-       man-db
+       man-db \
+       neovim \
+       noto-fonts \
+       openssh \
+       python \
+       python-yaml \
+       ripgrep \
+       starship \
+       sudo \
+       tmux \
+       ttf-nerd-fonts-symbols \
+       vi \
+       vim \
+       zlib \
+       zsh \
+       zsh-autosuggestions \
+       zsh-syntax-highlighting
+
 
 # Create a non-root user (e.g., "user")
 RUN useradd -m user && \
@@ -60,6 +72,13 @@ RUN touch "$HOME/.cache/zsh/history"
 # create python venv
 RUN python -m venv "$HOME/.pyvenv"
 RUN source "$HOME/.pyvenv/bin/activate" && pip3 install python-lsp-server pynvim && deactivate
+
+# download and build llvm from source
+RUN git clone --depth=1 https://github.com/llvm/llvm-project.git && \
+    cd llvm-project && mkdir build && cd build && \
+    cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED_LIBS=on \
+    -DCMAKE_INSTAL_PREFIX=~/llvm-project/build -G "Unix Makefiles" ../llvm LLVM_USE_LINKER=lld && \
+    make -j4
 
 # Set the default shell command
 CMD ["/usr/bin/zsh"]
